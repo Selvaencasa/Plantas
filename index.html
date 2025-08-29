@@ -507,8 +507,8 @@
                 <!-- Segundo producto destacado -->
                 <div class="product-card" data-category="exterior">
                     <div class="product-badge">Popular</div>
-                    <div class="product-image" data-focus="top" onclick="openModal('images/cala.jpg', 'Cala')">
-                        <img src="images/cala.jpg" alt="Cala" onerror="handleImageError(this, 'Cala')">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/cala.jpeg', 'Cala')">
+                        <img src="images/cala.jpeg" alt="Cala" onerror="handleImageError(this, 'Cala')">
                         <div class="alt-text">Imagen de Cala</div>
                     </div>
                     <div class="product-info">
@@ -523,8 +523,8 @@
                 
                 <!-- Productos de precio medio -->
                 <div class="product-card" data-category="exterior">
-                    <div class="product-image" data-focus="center" onclick="openModal('images/kalanchoe.jpg', 'Kalanchoe')">
-                        <img src="images/kalanchoe.jpg" alt="Kalanchoe" onerror="handleImageError(this, 'Kalanchoe')">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/kalanchoe.jpeg', 'Kalanchoe')">
+                        <img src="images/kalanchoe.jpeg" alt="Kalanchoe" onerror="handleImageError(this, 'Kalanchoe')">
                         <div class="alt-text">Imagen de Kalanchoe</div>
                     </div>
                     <div class="product-info">
@@ -553,8 +553,8 @@
                 </div>
                 
                 <div class="product-card" data-category="exterior">
-                    <div class="product-image" data-focus="top" onclick="openModal('images/geranio.jpg', 'Geranio')">
-                        <img src="images/geranio.jpg" alt="Geranio" onerror="handleImageError(this, 'Geranio')">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/geranio.jpeg', 'Geranio')">
+                        <img src="images/geranio.jpeg" alt="Geranio" onerror="handleImageError(this, 'Geranio')">
                         <div class="alt-text">Imagen de Geranio</div>
                     </div>
                     <div class="product-info">
@@ -617,7 +617,7 @@
                 
                 <!-- Productos económicos al final -->
                 <div class="product-card" data-category="exterior">
-                    <div class="product-image" data-focus="top" onclick="openModal('images/mioporo.jpg', 'Mioporo')">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/mioporo.jpg', 'Mioporo')">
                         <img src="images/mioporo.jpg" alt="Mioporo" onerror="handleImageError(this, 'Mioporo')">
                         <div class="alt-text">Imagen de Mioporo</div>
                     </div>
@@ -632,8 +632,8 @@
                 </div>
                 
                 <div class="product-card" data-category="exterior">
-                    <div class="product-image" data-focus="top" onclick="openModal('images/crisantemo.jpg', 'Crisantemo')">
-                        <img src="images/crisantemo.jpg" alt="Crisantemo" onerror="handleImageError(this, 'Crisantemo')">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/crisantemo.jpeg', 'Crisantemo')">
+                        <img src="images/crisantemo.jpeg" alt="Crisantemo" onerror="handleImageError(this, 'Crisantemo')">
                         <div class="alt-text">Imagen de Crisantemo</div>
                     </div>
                     <div class="product-info">
@@ -752,9 +752,17 @@
         // Función para manejar errores de imágenes
         function handleImageError(img, plantName) {
             console.log(`La imagen para ${plantName} no se pudo cargar.`);
-            // Intentar con extensión .jpeg si .jpg falla
+            // Intentar con extensión alternativa si falla
             if (img.src.endsWith('.jpg')) {
                 img.src = img.src.replace('.jpg', '.jpeg');
+                img.onerror = function() {
+                    // Si ambas extensiones fallan, mostrar texto alternativo
+                    img.style.display = 'none';
+                    const altText = img.parentElement.querySelector('.alt-text');
+                    if (altText) altText.style.display = 'block';
+                };
+            } else if (img.src.endsWith('.jpeg')) {
+                img.src = img.src.replace('.jpeg', '.jpg');
                 img.onerror = function() {
                     // Si ambas extensiones fallan, mostrar texto alternativo
                     img.style.display = 'none';
@@ -782,16 +790,18 @@
             const modalImage = document.getElementById('modalImage');
             const plantNameModal = document.getElementById('plantNameModal');
             
-            // Intentar con .jpeg si .jpg no funciona
-            if (!imageSrc.endsWith('.jpeg')) {
-                modalImage.onerror = function() {
-                    this.src = imageSrc.replace('.jpg', '.jpeg');
-                    this.onerror = function() {
-                        this.src = ''; // Limpiar src si ambas extensiones fallan
-                        plantNameModal.textContent = `Imagen no disponible: ${plantName}`;
-                    };
+            // Intentar con extensión alternativa si falla
+            modalImage.onerror = function() {
+                if (this.src.endsWith('.jpg')) {
+                    this.src = this.src.replace('.jpg', '.jpeg');
+                } else if (this.src.endsWith('.jpeg')) {
+                    this.src = this.src.replace('.jpeg', '.jpg');
+                }
+                this.onerror = function() {
+                    this.src = ''; // Limpiar src si ambas extensiones fallan
+                    plantNameModal.textContent = `Imagen no disponible: ${plantName}`;
                 };
-            }
+            };
             
             modalImage.src = imageSrc;
             plantNameModal.textContent = plantName;
@@ -811,4 +821,3 @@
     </script>
 </body>
 </html>
-<!-- ======= Sección de Comentarios ======= -->
