@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selvaencasa - Plantas y Jardinería</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --color-primary: #d4edda;
+            --color-secondary: #c3e6cb;
+            --color-accent: #8acc95;
+            --color-dark: #155724;
+            --color-text: #2d4a32;
+            --color-light: #f8fff9;
+            --color-sale: #e63946;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: var(--color-light);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
+            padding: 20px 0;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: var(--color-dark);
+            text-align: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo span {
+            color: var(--color-accent);
+        }
+        
+        .logo-icon {
+            color: var(--color-dark);
+            font-size: 2.2rem;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="%23d4edda" width="100" height="100"/><path fill="%23c3e6cb" d="M30,30 Q50,10 70,30 T100,50 T70,70 T30,70 T0,50 T30,30" /></svg>');
+            background-size: 300px;
+        }
+        
+        .hero h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: var(--color-dark);
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            color: var(--color-text);
+        }
+        
+        .btn {
+            display: inline-block;
+            background: var(--color-dark);
+            color: white;
+            padding: 12px 30px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .btn:hover {
+            background: var(--color-accent);
+            transform: translateY(-3px);
+        }
+        
+        /* Products */
+        .products {
+            padding: 60px 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            font-size: 2.2rem;
+            margin-bottom: 40px;
+            color: var(--color-dark);
+            position: relative;
+        }
+        
+        .section-title:after {
+            content: "";
+            display: block;
+            width: 80px;
+            height: 3px;
+            background: var(--color-accent);
+            margin: 15px auto;
+        }
+        
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-10px);
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--color-sale);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 0.8rem;
+            z-index: 10;
+        }
+        
+        .product-image {
+            height: 250px;
+            background: var(--color-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        
+        /* Puntos de interés personalizados para cada planta */
+        .product-image[data-focus="center"] img {
+            object-position: center;
+        }
+        
+        .product-image[data-focus="top"] img {
+            object-position: top;
+        }
+        
+        .product-image[data-focus="bottom"] img {
+            object-position: bottom;
+        }
+        
+        .product-image[data-focus="left"] img {
+            object-position: left;
+        }
+        
+        .product-image[data-focus="right"] img {
+            object-position: right;
+        }
+        
+        .product-card:hover .product-image img {
+            transform: scale(1.05);
+        }
+        
+        .product-image i {
+            font-size: 80px;
+            color: var(--color-dark);
+            opacity: 0.7;
+        }
+        
+        .product-info {
+            padding: 20px;
+        }
+        
+        .product-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            color: var(--color-dark);
+        }
+        
+        .product-description {
+            color: var(--color-text);
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+        }
+        
+        .product-price {
+            font-weight: bold;
+            font-size: 1.3rem;
+            color: var(--color-dark);
+            margin-bottom: 15px;
+        }
+        
+        .whatsapp-btn {
+            display: block;
+            text-align: center;
+            background: #25D366;
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        
+        .whatsapp-btn:hover {
+            background: #128C7E;
+        }
+        
+        /* Features */
+        .features {
+            background: var(--color-primary);
+            padding: 60px 0;
+            text-align: center;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--color-dark);
+            margin-bottom: 20px;
+        }
+        
+        /* Categories */
+        .categories {
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .category-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .category-btn {
+            background: var(--color-secondary);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .category-btn:hover, .category-btn.active {
+            background: var(--color-dark);
+            color: white;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--color-dark);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px 0;
+        }
+        
+        .social-links a {
+            color: white;
+            font-size: 1.5rem;
+            transition: color 0.3s;
+        }
+        
+        .social-links a:hover {
+            color: var(--color-accent);
+        }
+
+        /* Image error handling */
+        .product-image img {
+            font-size: 0; /* Hide alt text when image is present */
+        }
+        
+        .product-image .alt-text {
+            display: none;
+            font-size: 16px;
+            text-align: center;
+            padding: 20px;
+            color: var(--color-dark);
+        }
+        
+        .product-image img[src=""] {
+            display: none;
+        }
+        
+        .product-image img[src=""] + .alt-text {
+            display: block;
+        }
+        
+        /* Image Modal */
+        .image-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .image-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+        
+        .modal-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+        }
+        
+        .modal-content img {
+            max-width: 100%;
+            max-height: 80vh;
+            border-radius: 8px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            color: white;
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        
+        .close-modal:hover {
+            color: var(--color-accent);
+        }
+        
+        .plant-name-modal {
+            position: absolute;
+            bottom: -50px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo {
+                font-size: 2rem;
+            }
+            
+            .category-buttons {
+                gap: 10px;
+            }
+            
+            .category-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
+            
+            .close-modal {
+                top: -30px;
+                right: 10px;
+                font-size: 30px;
+            }
+            
+            .plant-name-modal {
+                bottom: -40px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Modal para imagen completa -->
+    <div class="image-modal" id="imageModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <img id="modalImage" src="" alt="">
+            <div class="plant-name-modal" id="plantNameModal"></div>
+        </div>
+    </div>
+
+    <header>
+        <div class="container">
+            <div class="logo">
+                <i class="fas fa-leaf logo-icon"></i>
+                <div>Selva<span>encasa</span></div>
+            </div>
+        </div>
+    </header>
+    
+    <section class="hero">
+        <div class="container">
+            <h1>Lleva la naturaleza a tu hogar</h1>
+            <p>Descubre nuestra selección de plantas para embellecer tus espacios y conectar con la naturaleza</p>
+            <a href="#products" class="btn">Ver Catálogo</a>
+        </div>
+    </section>
+    
+    <section class="categories">
+        <div class="container">
+            <h2 class="section-title">Nuestras Categorías</h2>
+            <div class="category-buttons">
+                <button class="category-btn active" data-category="all">Todas las plantas</button>
+                <button class="category-btn" data-category="interior">Plantas de Interior</button>
+                <button class="category-btn" data-category="exterior">Plantas de Exterior</button>
+                <button class="category-btn" data-category="aromaticas">Aromáticas y Medicinales</button>
+            </div>
+        </div>
+    </section>
+    
+    <section class="products" id="products">
+        <div class="container">
+            <h2 class="section-title">Plantas Destacadas</h2>
+            
+            <div class="product-grid">
+                <!-- Producto destacado (premium) -->
+                <div class="product-card" data-category="interior">
+                    <div class="product-badge">Premium</div>
+                    <div class="product-image" data-focus="center" onclick="openModal('images/ficus.jpg', 'Ficus')">
+                        <img src="images/ficus.jpg" alt="Ficus" onerror="handleImageError(this, 'Ficus')">
+                        <div class="alt-text">Imagen de Ficus</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Ficus</h3>
+                        <p class="product-description">Planta de interior resistente con hojas verdes brillantes. Purifica el aire y es de bajo mantenimiento.</p>
+                        <p class="product-price">$16.000</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Ficus" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Segundo producto destacado -->
+                <div class="product-card" data-category="exterior">
+                    <div class="product-badge">Popular</div>
+                    <div class="product-image" data-focus="top" onclick="openModal('images/cala.jpg', 'Cala')">
+                        <img src="images/cala.jpg" alt="Cala" onerror="handleImageError(this, 'Cala')">
+                        <div class="alt-text">Imagen de Cala</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Cala</h3>
+                        <p class="product-description">Elegantes flores en forma de embudo. Perfecta para jardines húmedos y arreglos florales.</p>
+                        <p class="product-price">$12.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Cala" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Productos de precio medio -->
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/kalanchoe.jpg', 'Kalanchoe')">
+                        <img src="images/kalanchoe.jpg" alt="Kalanchoe" onerror="handleImageError(this, 'Kalanchoe')">
+                        <div class="alt-text">Imagen de Kalanchoe</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Kalanchoe</h3>
+                        <p class="product-description">Suculenta con flores duraderas y coloridas. Muy resistente y perfecta para interiores.</p>
+                        <p class="product-price">$6.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Kalanchoe" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="top" onclick="openModal('images/tulipan.jpg', 'Tulipán')">
+                        <img src="images/tulipan.jpg" alt="Tulipán" onerror="handleImageError(this, 'Tulipán')">
+                        <div class="alt-text">Imagen de Tulipán</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Tulipán</h3>
+                        <p class="product-description">Elegantes flores en diversos colores. Ideal para arreglos florales y jardines primaverales.</p>
+                        <p class="product-price">$4.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Tulipán" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="top" onclick="openModal('images/geranio.jpg', 'Geranio')">
+                        <img src="images/geranio.jpg" alt="Geranio" onerror="handleImageError(this, 'Geranio')">
+                        <div class="alt-text">Imagen de Geranio</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Geranio</h3>
+                        <p class="product-description">Hermosas flores coloridas, perfectas para balcones y jardines. Fácil cuidado y larga floración.</p>
+                        <p class="product-price">$3.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Geranio" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="center" onclick="openModal('images/ranunculo.jpg', 'Ranúnculo')">
+                        <img src="images/ranunculo.jpg" alt="Ranúnculo" onerror="handleImageError(this, 'Ranúnculo')">
+                        <div class="alt-text">Imagen de Ranúnculo</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Ranúnculo</h3>
+                        <p class="product-description">Flores multi-pétalos en colores vibrantes. Ideal para macizos florales y borduras de jardín.</p>
+                        <p class="product-price">$3.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Ranúnculo" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Plantas aromáticas -->
+                <div class="product-card" data-category="aromaticas">
+                    <div class="product-badge">Nuevo</div>
+                    <div class="product-image" data-focus="center" onclick="openModal('images/hierbabuena.jpg', 'Hierba Buena')">
+                        <img src="images/hierbabuena.jpg" alt="Hierba Buena" onerror="handleImageError(this, 'Hierba Buena')">
+                        <div class="alt-text">Imagen de Hierba Buena</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Hierba Buena</h3>
+                        <p class="product-description">Aroma fresco y mentolado. Perfecta para infusiones, cócteles y uso culinario. Fácil cultivo.</p>
+                        <p class="product-price">$3.000</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Hierba%20Buena" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="aromaticas">
+                    <div class="product-badge">Oferta</div>
+                    <div class="product-image" data-focus="center" onclick="openModal('images/poleo.jpg', 'Poleo')">
+                        <img src="images/poleo.jpg" alt="Poleo" onerror="handleImageError(this, 'Poleo')">
+                        <div class="alt-text">Imagen de Poleo</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Poleo</h3>
+                        <p class="product-description">Planta medicinal con propiedades digestivas. Ideal para té y como repelente natural de insectos.</p>
+                        <p class="product-price">$2.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Poleo" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Productos económicos al final -->
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="top" onclick="openModal('images/mioporo.jpg', 'Mioporo')">
+                        <img src="images/mioporo.jpg" alt="Mioporo" onerror="handleImageError(this, 'Mioporo')">
+                        <div class="alt-text">Imagen de Mioporo</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Mioporo</h3>
+                        <p class="product-description">Arbusto perenne ideal para setos y borduras. Florece abundantemente en primavera.</p>
+                        <p class="product-price">$2.500</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Mioporo" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="product-card" data-category="exterior">
+                    <div class="product-image" data-focus="top" onclick="openModal('images/crisantemo.jpg', 'Crisantemo')">
+                        <img src="images/crisantemo.jpg" alt="Crisantemo" onerror="handleImageError(this, 'Crisantemo')">
+                        <div class="alt-text">Imagen de Crisantemo</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Crisantemo</h3>
+                        <p class="product-description">Flores vibrantes y duraderas. Disponible en múltiples colores para alegrar cualquier espacio.</p>
+                        <p class="product-price">$2.200</p>
+                        <a href="https://wa.me/56983420315?text=Estoy%20interesado%20en%20Crisantemo" class="whatsapp-btn">
+                            <i class="fab fa-whatsapp"></i> Pedir por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section class="features">
+        <div class="container">
+            <h2 class="section-title">¿Por qué elegirnos?</h2>
+            
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <h3>Envío Rápido</h3>
+                    <p>Entregamos en Santiago en 24-48 horas</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-seedling"></i>
+                    </div>
+                    <h3>Plantas Saludables</h3>
+                    <p>Garantizamos la calidad y salud de todas nuestras plantas</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Asesoría Experta</h3>
+                    <p>Consejos profesionales para el cuidado de tus plantas</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-tags"></i>
+                    </div>
+                    <h3>Ofertas Especiales</h3>
+                    <p>Descuentos en combos y promociones mensuales</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <footer>
+        <div class="container">
+            <h3>Selvaencasa - Plantas y Jardinería</h3>
+            <p>Llevando naturaleza a los hogares chilenos</p>
+            
+            <div class="social-links">
+                <a href="https://www.instagram.com/selva_encasa/" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#"><i class="fab fa-facebook"></i></a>
+                <a href="#"><i class="fab fa-tiktok"></i></a>
+            </div>
+            
+            <p>Contacto: +56 983420315 | info@selvaencasa.cl</p>
+            <p>&copy; 2023 Selvaencasa - Todos los derechos reservados</p>
+        </div>
+    </footer>
+
+    <script>
+        // Filtrado de categorías
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
+            const productCards = document.querySelectorAll('.product-card');
+            
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    // Remover clase active de todos los botones
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    // Agregar clase active al botón clickeado
+                    button.classList.add('active');
+                    
+                    const category = button.getAttribute('data-category');
+                    
+                    // Mostrar u ocultar productos según la categoría
+                    productCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+
+            // Verificar imágenes y ofrecer alternativas si no se cargan
+            checkImages();
+            
+            // Cerrar modal al hacer clic fuera de la imagen
+            document.getElementById('imageModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
+            
+            // Cerrar modal con la tecla Escape
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+        });
+
+        // Función para manejar errores de imágenes
+        function handleImageError(img, plantName) {
+            console.log(`La imagen para ${plantName} no se pudo cargar.`);
+            // Intentar con extensión .jpeg si .jpg falla
+            if (img.src.endsWith('.jpg')) {
+                img.src = img.src.replace('.jpg', '.jpeg');
+                img.onerror = function() {
+                    // Si ambas extensiones fallan, mostrar texto alternativo
+                    img.style.display = 'none';
+                    const altText = img.parentElement.querySelector('.alt-text');
+                    if (altText) altText.style.display = 'block';
+                };
+            }
+        }
+
+        // Función para verificar todas las imágenes
+        function checkImages() {
+            const images = document.querySelectorAll('.product-image img');
+            images.forEach(img => {
+                // Verificar si la imagen se cargó correctamente
+                if (!img.complete || img.naturalHeight === 0) {
+                    const plantName = img.alt;
+                    handleImageError(img, plantName);
+                }
+            });
+        }
+        
+        // Función para abrir el modal con la imagen en tamaño completo
+        function openModal(imageSrc, plantName) {
+            const modal = document.getElementById('imageModal');
+            const modalImage = document.getElementById('modalImage');
+            const plantNameModal = document.getElementById('plantNameModal');
+            
+            // Intentar con .jpeg si .jpg no funciona
+            if (!imageSrc.endsWith('.jpeg')) {
+                modalImage.onerror = function() {
+                    this.src = imageSrc.replace('.jpg', '.jpeg');
+                    this.onerror = function() {
+                        this.src = ''; // Limpiar src si ambas extensiones fallan
+                        plantNameModal.textContent = `Imagen no disponible: ${plantName}`;
+                    };
+                };
+            }
+            
+            modalImage.src = imageSrc;
+            plantNameModal.textContent = plantName;
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Prevenir scroll
+        }
+        
+        // Función para cerrar el modal
+        function closeModal() {
+            const modal = document.getElementById('imageModal');
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+        
+        // Asignar la función closeModal al botón de cerrar
+        document.getElementById('closeModal').addEventListener('click', closeModal);
+    </script>
+</body>
+</html>
