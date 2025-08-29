@@ -706,119 +706,168 @@
     </footer>
 
     <script>
-        // Filtrado de categorías
-        document.addEventListener('DOMContentLoaded', function() {
-            const categoryButtons = document.querySelectorAll('.category-btn');
-            const productCards = document.querySelectorAll('.product-card');
-            
-            categoryButtons.forEach(button => {
-                button.addEventListener('click', () => {
-                    // Remover clase active de todos los botones
-                    categoryButtons.forEach(btn => btn.classList.remove('active'));
-                    // Agregar clase active al botón clickeado
-                    button.classList.add('active');
-                    
-                    const category = button.getAttribute('data-category');
-                    
-                    // Mostrar u ocultar productos según la categoría
-                    productCards.forEach(card => {
-                        if (category === 'all' || card.getAttribute('data-category') === category) {
-                            card.style.display = 'block';
-                        } else {
-                            card.style.display = 'none';
-                        }
-                    });
+    // Filtrado de categorías
+    document.addEventListener('DOMContentLoaded', function() {
+        const categoryButtons = document.querySelectorAll('.category-btn');
+        const productCards = document.querySelectorAll('.product-card');
+        
+        categoryButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remover clase active de todos los botones
+                categoryButtons.forEach(btn => btn.classList.remove('active'));
+                // Agregar clase active al botón clickeado
+                button.classList.add('active');
+                
+                const category = button.getAttribute('data-category');
+                
+                // Mostrar u ocultar productos según la categoría
+                productCards.forEach(card => {
+                    if (category === 'all' || card.getAttribute('data-category') === category) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
                 });
-            });
-
-            // Verificar imágenes y ofrecer alternativas si no se cargan
-            checkImages();
-            
-            // Cerrar modal al hacer clic fuera de la imagen
-            document.getElementById('imageModal').addEventListener('click', function(e) {
-                if (e.target === this) {
-                    closeModal();
-                }
-            });
-            
-            // Cerrar modal con la tecla Escape
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape') {
-                    closeModal();
-                }
             });
         });
 
-        // Función para manejar errores de imágenes
-        function handleImageError(img, plantName) {
-            console.log(`La imagen para ${plantName} no se pudo cargar.`);
-            // Intentar con extensión alternativa si falla
-            if (img.src.endsWith('.jpg')) {
-                img.src = img.src.replace('.jpg', '.jpeg');
-                img.onerror = function() {
-                    // Si ambas extensiones fallan, mostrar texto alternativo
-                    img.style.display = 'none';
-                    const altText = img.parentElement.querySelector('.alt-text');
-                    if (altText) altText.style.display = 'block';
-                };
-            } else if (img.src.endsWith('.jpeg')) {
-                img.src = img.src.replace('.jpeg', '.jpg');
-                img.onerror = function() {
-                    // Si ambas extensiones fallan, mostrar texto alternativo
-                    img.style.display = 'none';
-                    const altText = img.parentElement.querySelector('.alt-text');
-                    if (altText) altText.style.display = 'block';
-                };
+        // Precargar imágenes para evitar el problema de visualización
+        preloadImages();
+        
+        // Verificar imágenes después de que se cargue la página completamente
+        window.addEventListener('load', function() {
+            checkImages();
+        });
+        
+        // Cerrar modal al hacer clic fuera de la imagen
+        document.getElementById('imageModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
-        }
+        });
+        
+        // Cerrar modal con la tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    });
 
-        // Función para verificar todas las imágenes
-        function checkImages() {
-            const images = document.querySelectorAll('.product-image img');
+    // Precargar imágenes para evitar problemas de visualización
+    function preloadImages() {
+        const imageUrls = [
+            'images/ficus.jpg',
+            'images/cala.jpeg',
+            'images/kalanchoe.jpeg',
+            'images/tulipan.jpg',
+            'images/geranio.jpeg',
+            'images/ranunculo.jpg',
+            'images/hierbabuena.jpg',
+            'images/poleo.jpg',
+            'images/mioporo.jpg',
+            'images/crisantemo.jpeg'
+        ];
+        
+        imageUrls.forEach(url => {
+            const img = new Image();
+            img.src = url;
+        });
+    }
+
+    // Función para manejar errores de imágenes
+    function handleImageError(img, plantName) {
+        console.log(`La imagen para ${plantName} no se pudo cargar.`);
+        // Intentar con extensión alternativa si falla
+        if (img.src.endsWith('.jpg')) {
+            img.src = img.src.replace('.jpg', '.jpeg');
+            img.onerror = function() {
+                // Si ambas extensiones fallan, mostrar texto alternativo
+                img.style.display = 'none';
+                const altText = img.parentElement.querySelector('.alt-text');
+                if (altText) altText.style.display = 'block';
+            };
+        } else if (img.src.endsWith('.jpeg')) {
+            img.src = img.src.replace('.jpeg', '.jpg');
+            img.onerror = function() {
+                // Si ambas extensiones fallan, mostrar texto alternativo
+                img.style.display = 'none';
+                const altText = img.parentElement.querySelector('.alt-text');
+                if (altText) altText.style.display = 'block';
+            };
+        }
+    }
+
+    // Función para verificar todas las imágenes
+    function checkImages() {
+        const images = document.querySelectorAll('.product-image img');
+        let retries = 0;
+        const maxRetries = 3;
+        
+        const checkImage = () => {
+            let allLoaded = true;
+            
             images.forEach(img => {
                 // Verificar si la imagen se cargó correctamente
                 if (!img.complete || img.naturalHeight === 0) {
+                    allLoaded = false;
                     const plantName = img.alt;
-                    handleImageError(img, plantName);
+                    
+                    if (retries < maxRetries) {
+                        console.log(`Reintentando carga de imagen: ${plantName} (Intento ${retries + 1})`);
+                        // Forzar recarga de la imagen
+                        img.src = img.src;
+                    } else {
+                        handleImageError(img, plantName);
+                    }
                 }
             });
-        }
-        
-        // Función para abrir el modal con la imagen en tamaño completo
-        function openModal(imageSrc, plantName) {
-            const modal = document.getElementById('imageModal');
-            const modalImage = document.getElementById('modalImage');
-            const plantNameModal = document.getElementById('plantNameModal');
             
-            // Intentar con extensión alternativa si falla
-            modalImage.onerror = function() {
-                if (this.src.endsWith('.jpg')) {
-                    this.src = this.src.replace('.jpg', '.jpeg');
-                } else if (this.src.endsWith('.jpeg')) {
-                    this.src = this.src.replace('.jpeg', '.jpg');
-                }
-                this.onerror = function() {
-                    this.src = ''; // Limpiar src si ambas extensiones fallan
-                    plantNameModal.textContent = `Imagen no disponible: ${plantName}`;
-                };
+            if (!allLoaded && retries < maxRetries) {
+                retries++;
+                setTimeout(checkImage, 1000); // Reintentar después de 1 segundo
+            }
+        };
+        
+        checkImage();
+    }
+    
+    // Función para abrir el modal con la imagen en tamaño completo
+    function openModal(imageSrc, plantName) {
+        const modal = document.getElementById('imageModal');
+        const modalImage = document.getElementById('modalImage');
+        const plantNameModal = document.getElementById('plantNameModal');
+        
+        // Intentar con extensión alternativa si falla
+        modalImage.onerror = function() {
+            if (this.src.endsWith('.jpg')) {
+                this.src = this.src.replace('.jpg', '.jpeg');
+            } else if (this.src.endsWith('.jpeg')) {
+                this.src = this.src.replace('.jpeg', '.jpg');
+            }
+            this.onerror = function() {
+                this.src = ''; // Limpiar src si ambas extensiones fallan
+                plantNameModal.textContent = `Imagen no disponible: ${plantName}`;
             };
-            
-            modalImage.src = imageSrc;
-            plantNameModal.textContent = plantName;
-            modal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Prevenir scroll
-        }
+        };
         
-        // Función para cerrar el modal
-        function closeModal() {
-            const modal = document.getElementById('imageModal');
-            modal.classList.remove('active');
-            document.body.style.overflow = ''; // Restaurar scroll
-        }
-        
-        // Asignar la función closeModal al botón de cerrar
-        document.getElementById('closeModal').addEventListener('click', closeModal);
-    </script>
+        modalImage.src = imageSrc;
+        plantNameModal.textContent = plantName;
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Prevenir scroll
+    }
+    
+    // Función para cerrar el modal
+    function closeModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar scroll
+    }
+    
+    // Asignar la función closeModal al botón de cerrar
+    document.getElementById('closeModal').addEventListener('click', closeModal);
+</script>
 </body>
 </html>
+
 
